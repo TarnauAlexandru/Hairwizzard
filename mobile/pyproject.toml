@@ -5,6 +5,11 @@ description = "Strand: Flet Android app"
 requires-python = ">=3.12"
 dependencies = ["flet"]
 
+[dependency-groups]
+# flet[all] adds the CLI (flet run / flet build) and the desktop client for testing on the laptop.
+# Only "flet" above goes into the APK.
+dev = ["flet[all]"]
+
 [tool.flet]
 org = "dev.tarnau"
 product = "Strand"
