@@ -1,8 +1,29 @@
 # mobile
 
-Flet (Python) Android app. Arrives in Phase 0.2 (hello world on the Galaxy S24) and Phase 6 (app shell).
+Flet (Python) Android app. Phase 0.2 is a hello world (one screen, one button); Phase 6 builds the real app shell.
 
-Planned layout:
+## Run on your laptop (fastest feedback)
+
+```powershell
+cd mobile
+uv venv --python 3.12
+uv pip install flet
+uv run flet run src/main.py
+```
+
+## Build the APK and install on a phone over USB
+
+```powershell
+cd mobile
+uv run flet build apk
+adb install -r build\apk\app-release.apk
+adb logcat -s flutter python
+```
+
+The APK path may differ slightly by Flet version: look in `mobile/build/apk/`.
+Build output is git-ignored. The full walkthrough is step 0.2 in the project guide.
+
+## Planned layout
 
 ```
 mobile/
@@ -19,5 +40,5 @@ mobile/
 └── tests/
 ```
 
-Not part of the uv workspace yet: `flet build` packages the app on its own. How it pulls in
-`strand_core` is decided in Phase 0.2.
+Not part of the uv workspace: `flet build` packages the app on its own. How it pulls in
+`strand_core` is decided in a later phase.
