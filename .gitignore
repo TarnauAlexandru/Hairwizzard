@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Secrets: never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.jks
+*.keystore
+
+# Data and models: datasets are never committed; large models go through releases
+ml/data/
+ml/**/runs/
+ml/**/checkpoints/
+*.ckpt
+*.pt
+*.pth
+
+# Flet / Flutter build output
+mobile/build/
+mobile/.flet/
+
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db

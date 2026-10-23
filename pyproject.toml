@@ -1,0 +1,78 @@
+[project]
+name = "strand-workspace"
+version = "0.1.0"
+description = "Strand: on-device haircut analysis and styling app (monorepo root)"
+requires-python = ">=3.12"
+readme = "README.md"
+license = "MIT"
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/strand_core", "backend"]
+
+[tool.uv.sources]
+strand-core = { workspace = true }
+strand-backend = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "pre-commit>=4.0",
+    "bandit[toml]>=1.8",
+    "pip-audit>=2.7",
+]
+
+# ---------- Ruff (lint + format) ----------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["packages/strand_core/src", "backend"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # isort
+    "B",        # bugbear
+    "UP",       # pyupgrade
+    "N",        # naming
+    "S",        # bandit-style security checks
+    "SIM",      # simplify
+    "PTH",      # use pathlib
+    "RUF",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S101"]  # assert is fine in tests
+
+# ---------- Mypy (types) ----------
+[tool.mypy]
+python_version = "3.12"
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+check_untyped_defs = true
+mypy_path = "packages/strand_core/src"
+
+[[tool.mypy.overrides]]
+module = "strand_core.*"
+strict = true
+
+# ---------- Pytest ----------
+[tool.pytest.ini_options]
+testpaths = ["packages/strand_core/tests", "backend/tests"]
+addopts = "-ra --strict-markers --import-mode=importlib"
+
+[tool.coverage.run]
+branch = true
+source = ["strand_core", "app"]
+
+# ---------- Bandit (security lint) ----------
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
