@@ -6,8 +6,7 @@ Flet (Python) Android app. Phase 0.2 is a hello world (one screen, one button); 
 
 ```powershell
 cd mobile
-uv venv --python 3.12
-uv pip install flet
+uv sync
 uv run flet run src/main.py
 ```
 
