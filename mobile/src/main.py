@@ -1,6 +1,9 @@
-"""Phase 0.3 spike screen: run an ONNX model on the phone and show the result and time.
+"""Phase 0 spike app.
 
-Check on the phone with:  adb logcat -d | Select-String "ONNX"
+0.3: an ONNX model runs with onnxruntime (top line).
+0.4 + 0.5: MediaPipe Face Landmarker runs in a WebView and sends its results to Python.
+
+Check on the phone with:  adb logcat -d | Select-String "ONNX|MP |BRIDGE|JS:"
 """
 
 import logging
@@ -8,56 +11,43 @@ import logging
 import flet as ft
 import numpy as np
 from spike_onnx import OnnxSpike
+from spike_webview import build
 
 log = logging.getLogger("strand")
 logging.basicConfig(level=logging.INFO)
 
-SAMPLE = np.array([0.5, -1.2, 0.3, 2.0], dtype=np.float32)
 TEXT = "#F2EFE9"
-ACCENT = "#C9A46A"
+
+
+def onnx_line() -> str:
+    try:
+        spike = OnnxSpike()
+        p = spike.predict(np.array([0.5, -1.2, 0.3, 2.0], dtype=np.float32))
+    except Exception as exc:
+        log.exception("ONNX FAIL %s: %s", type(exc).__name__, exc)
+        return f"ONNX FAIL: {type(exc).__name__}"
+    log.info("ONNX OK pred=%d ms=%.2f", p.label, p.ms)
+    return f"ONNX OK · {p.ms:.2f} ms"
 
 
 def main(page: ft.Page) -> None:
     page.title = "Strand"
     page.bgcolor = "#16171A"
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.padding = 0
 
-    title = ft.Text("Strand · ONNX spike", size=24, color=TEXT, weight=ft.FontWeight.BOLD)
-    result = ft.Text("", size=16, color=TEXT, text_align=ft.TextAlign.CENTER)
-    rng = np.random.default_rng()
-
-    try:
-        spike = OnnxSpike()
-    except Exception as exc:
-        log.exception("ONNX FAIL %s: %s", type(exc).__name__, exc)
-        result.value = f"ONNX FAIL\n{type(exc).__name__}: {exc}"
-        page.add(title, result)
-        return
-
-    log.info(
-        "ONNX loaded ort=%s load_ms=%.1f path=%s", spike.ort_version, spike.load_ms, spike.path
+    status = ft.Text("MediaPipe: se încarcă…", color=TEXT)
+    header = ft.Container(
+        ft.Column(
+            [
+                ft.Text("Strand · spike", size=20, color=TEXT, weight=ft.FontWeight.BOLD),
+                ft.Text(onnx_line(), color=TEXT),
+                status,
+            ],
+            spacing=2,
+        ),
+        padding=12,
     )
-
-    def run(features: np.ndarray) -> None:
-        p = spike.predict(features)
-        log.info("ONNX OK pred=%d ms=%.2f", p.label, p.ms)
-        result.value = (
-            f"onnxruntime {spike.ort_version}\n"
-            f"clasa {p.label} (p={p.probability:.2f})\n"
-            f"{p.ms:.2f} ms · încărcare {spike.load_ms:.0f} ms"
-        )
-
-    def on_tap(_: ft.ControlEvent) -> None:
-        run(rng.normal(size=SAMPLE.shape).astype(np.float32))
-        page.update()
-
-    run(SAMPLE)
-    page.add(
-        title,
-        result,
-        ft.FilledButton("Rulează predicția", on_click=on_tap, bgcolor=ACCENT, color="#16171A"),
-    )
+    page.add(ft.SafeArea(ft.Column([header, build(page, status)], expand=True), expand=True))
 
 
 # ft.run exists in newer Flet; ft.app in older ones.

@@ -5,6 +5,7 @@ description = "Strand: Flet Android app"
 requires-python = ">=3.12"
 dependencies = [
     "flet",
+    "flet-webview",
     "numpy",
     # Must be a version Flet ships as a prebuilt Android wheel (see Flet "binary packages" docs).
     "onnxruntime==1.27.0",
@@ -13,7 +14,7 @@ dependencies = [
 [dependency-groups]
 # flet[all] adds the CLI (flet run / flet build) and the desktop client for testing on the laptop.
 # Only the dependencies above go into the APK.
-dev = ["flet[all]"]
+dev = ["flet[all]", "pytest"]
 
 [tool.flet]
 org = "dev.tarnau"
@@ -26,3 +27,14 @@ path = "src"
 
 [tool.flet.android]
 target_arch = ["arm64-v8a"]
+
+# The WebView loads the page from Python's local server at http://127.0.0.1.
+# Android blocks plain http by default; this allows it. The server only listens on
+# 127.0.0.1 and needs a random token in every URL (see src/bridge/local_server.py).
+# Phase 12: narrow this to 127.0.0.1 with a network security config.
+[tool.flet.android.manifest_application]
+usesCleartextTraffic = "true"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

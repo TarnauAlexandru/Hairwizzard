@@ -32,6 +32,11 @@ ml/**/checkpoints/
 # Flet / Flutter build output
 mobile/build/
 mobile/.flet/
+# Downloaded by mobile/scripts/fetch_web_assets.py (about 15 MB)
+mobile/src/web/vendor/
+
+# Photos never go in git: the test face is your own local file
+mobile/src/web/test_face.*
 
 # Editors and OS
 .vscode/*

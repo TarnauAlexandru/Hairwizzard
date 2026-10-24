@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Strand spike</title>
+  <style>
+    body { margin: 0; background: #16171A; color: #F2EFE9; font: 14px/1.4 system-ui, sans-serif; }
+    #stage { position: relative; width: 100%; }
+    #face, #overlay { width: 100%; display: block; }
+    #overlay { position: absolute; inset: 0; }
+    #status { white-space: pre-wrap; padding: 8px 12px; font-family: monospace; font-size: 12px; }
+    .err { color: #ff8a80; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <img id="face" src="test_face.jpg" alt="test face">
+    <canvas id="overlay"></canvas>
+  </div>
+  <div id="status"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
