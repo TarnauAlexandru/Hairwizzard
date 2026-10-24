@@ -10,3 +10,14 @@ ml/
 ```
 
 Datasets are never committed. Each dataset gets a data card in `docs/` with its source and license.
+
+## Phase 0.3 spike: export a test model
+
+```powershell
+cd ml
+uv sync
+uv run python -m export.train_spike_model   # writes mobile/src/assets/models/spike_classifier.onnx
+uv run pytest                               # ONNX output must match scikit-learn
+```
+
+`ml/` is its own uv project (not in the root workspace), like `mobile/`.

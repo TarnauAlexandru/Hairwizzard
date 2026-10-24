@@ -3,11 +3,16 @@ name = "strand-mobile"
 version = "0.1.0"
 description = "Strand: Flet Android app"
 requires-python = ">=3.12"
-dependencies = ["flet"]
+dependencies = [
+    "flet",
+    "numpy",
+    # Must be a version Flet ships as a prebuilt Android wheel (see Flet "binary packages" docs).
+    "onnxruntime==1.27.0",
+]
 
 [dependency-groups]
 # flet[all] adds the CLI (flet run / flet build) and the desktop client for testing on the laptop.
-# Only "flet" above goes into the APK.
+# Only the dependencies above go into the APK.
 dev = ["flet[all]"]
 
 [tool.flet]
